@@ -1,0 +1,38 @@
+#version 330 core
+
+precision highp float;
+
+uniform vec3       iResolution;              // image/buffer          The viewport resolution (z is pixel aspect ratio, usually 1.0)
+uniform float      iTime;                    // image/sound/buffer    Current time in seconds
+uniform float      iTimeDelta;               // image/buffer          Time it takes to render a frame, in seconds
+uniform int        iFrame;                   // image/buffer          Current frame
+uniform float      iFrameRate;               // image/buffer          Number of frames rendered per second
+uniform vec4       iDate;                    // image/buffer/sound    Year, month, day, time in seconds in .xyzw
+uniform float      iSampleRate;              // image/buffer/sound    The sound sample rate (typically 44100)
+
+// image/buffer/sound    Sampler for input textures i
+uniform sampler2D  iChannel0;
+uniform sampler2D  iChannel1;
+uniform sampler2D  iChannel2;
+uniform sampler2D  iChannel3;
+
+/*
+TODO: Implement later
+uniform float      iChannelTime[4];          // image/buffer          Time for channel (if video or sound), in seconds
+uniform vec3       iChannelResolution[4];    // image/buffer/sound    Input texture resolution for each channel
+uniform vec4       iMouse;                   // image/buffer          xy = current pixel coords (if LMB is down). zw = click pixel
+*/
+
+in vec2 texCoord;
+out vec4 fragColor;
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord );
+
+// TODO: vec2 mainSound( float time )
+
+void main() {
+    vec2 fragCoord = texCoord * iResolution;
+    mainImage(fragColor, fragCoord);
+}
+
+// USER-GENERATED CONTENT BELOW

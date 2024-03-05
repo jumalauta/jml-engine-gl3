@@ -1,0 +1,26 @@
+set(prefix "${PROJECT_SOURCE_DIR}/external/lib/libtheora-1.1.1") 
+set(Theora_INCLUDE_DIRS "${prefix}/include")
+
+if (MSYS OR MINGW)
+    if (prefix)
+        if (NOT EXISTS ${prefix})
+            message(FATAL_ERROR "Theora directory not found: " ${prefix})
+        endif()
+    endif()
+
+    set(exec_prefix "${prefix}")
+    set(libdir "${exec_prefix}/lib")
+    set(Theora_LIBDIR "${exec_prefix}/lib")
+    set(Theora_LIBRARIES "-ltheora")
+    string(STRIP "${Theora_LIBRARIES}" Theora_LIBRARIES)
+elseif (APPLE)
+    set(Theora_LIBRARIES "-framework Theora")
+else()
+    PKG_SEARCH_MODULE(Theora REQUIRED theora)
+    string(STRIP "${Theora_LIBRARIES}${TheoraDec_LIBRARIES}" Theora_LIBRARIES)
+
+    PKG_SEARCH_MODULE(TheoraDec REQUIRED theoradec)
+    string(STRIP "${TheoraDec_LIBRARIES}" TheoraDec_LIBRARIES)
+
+    list(APPEND Theora_LIBRARIES "${TheoraDec_LIBRARIES}")
+endif()

@@ -1,0 +1,26 @@
+set(prefix "${PROJECT_SOURCE_DIR}/external/lib/libvorbis-1.3.3") 
+set(Vorbis_INCLUDE_DIRS "${prefix}/include")
+
+if (MSYS OR MINGW)
+    if (prefix)
+        if (NOT EXISTS ${prefix})
+            message(FATAL_ERROR "Vorbis directory not found: " ${prefix})
+        endif()
+    endif()
+
+    set(exec_prefix "${prefix}")
+    set(libdir "${exec_prefix}/lib")
+    set(Vorbis_LIBDIR "${exec_prefix}/lib")
+    set(Vorbis_LIBRARIES "-lvorbis -lvorbisfile")
+    string(STRIP "${Vorbis_LIBRARIES}" Vorbis_LIBRARIES)
+elseif (APPLE)
+    set(Vorbis_LIBRARIES "-framework Vorbis")
+else()
+    PKG_SEARCH_MODULE(Vorbis REQUIRED vorbis)
+    string(STRIP "${Vorbis_LIBRARIES}" Vorbis_LIBRARIES)
+
+    PKG_SEARCH_MODULE(VorbisFile REQUIRED vorbisfile vorbisfile3)
+    string(STRIP "${VorbisFile_LIBRARIES}" VorbisFile_LIBRARIES)
+
+    list(APPEND Vorbis_LIBRARIES "${VorbisFile_LIBRARIES}")
+endif()
